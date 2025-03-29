@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback } from 'react';
+import { createContext, useContext, useReducer, useCallback, useMemo } from 'react';
 
 // Define action types
 const ActionTypes = {
@@ -45,24 +45,26 @@ function appReducer(state, action) {
 export function AppProvider({ children }) {
     const [state, dispatch] = useReducer(appReducer, initialState);
 
-    const emitUserAction = useCallback((action, data) => {
+    const emitUserAction = useCallback((action, data = {}) => {
         dispatch({ type: ActionTypes.USER_ACTION, payload: { action, data } });
     }, []);
 
-    const emitSystemEvent = useCallback((event, data) => {
+    const emitSystemEvent = useCallback((event, data = {}) => {
         dispatch({ type: ActionTypes.SYSTEM_EVENT, payload: { event, data } });
     }, []);
 
     const emitError = useCallback((error) => {
-        dispatch({ type: ActionTypes.ERROR, payload: { error } });
+        const errorPayload = typeof error === 'string' ? { message: error } : error;
+        dispatch({ type: ActionTypes.ERROR, payload: { error: errorPayload } });
     }, []);
 
-    const value = {
+    // Memoize the context value to prevent unnecessary re-renders
+    const value = useMemo(() => ({
         state,
         emitUserAction,
         emitSystemEvent,
         emitError
-    };
+    }), [state, emitUserAction, emitSystemEvent, emitError]);
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

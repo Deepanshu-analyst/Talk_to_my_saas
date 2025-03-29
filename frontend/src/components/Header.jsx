@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const Header = () => {
+const Header = ({ onInteraction }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
@@ -41,6 +41,7 @@ const Header = () => {
           className={`text-2xl md:text-3xl font-bold transition-all duration-500 transform ${
             isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
           }`}
+          onClick={() => onInteraction('logo_clicked')}
         >
           <span className="text-white">Talk</span>
           <span className="text-secondary-400">2</span>
@@ -56,6 +57,7 @@ const Header = () => {
                 isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
+              onClick={() => onInteraction(`nav_${item.toLowerCase()}_clicked`)}
             >
               {item}
             </a>
@@ -65,16 +67,25 @@ const Header = () => {
         <div className={`flex items-center space-x-4 transition-all duration-500 transform ${
           isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
         }`}>
-          <button className="hidden md:block px-4 py-2 rounded-lg border border-white/30 hover:bg-primary-600/80 text-white transition-all">
+          <button 
+            className="hidden md:block px-4 py-2 rounded-lg border border-white/30 hover:bg-primary-600/80 text-white transition-all"
+            onClick={() => onInteraction('login_clicked')}
+          >
             Log In
           </button>
           
-          <button className="px-4 py-2 bg-secondary-600/90 text-white rounded-lg font-medium hover:bg-secondary-700 transition-all shadow-md hover:shadow-glow transform hover:-translate-y-1 hover:scale-105">
+          <button 
+            className="px-4 py-2 bg-secondary-600/90 text-white rounded-lg font-medium hover:bg-secondary-700 transition-all shadow-md hover:shadow-glow transform hover:-translate-y-1 hover:scale-105"
+            onClick={() => onInteraction('get_started_clicked')}
+          >
             Get Started
           </button>
           
           {/* Mobile menu button */}
-          <button className="md:hidden text-white">
+          <button 
+            className="md:hidden text-white"
+            onClick={() => onInteraction('mobile_menu_clicked')}
+          >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>

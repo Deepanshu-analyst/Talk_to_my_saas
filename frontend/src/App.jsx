@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useApp } from './context/AppContext';
 import './App.css';
 
@@ -10,15 +10,13 @@ import Testimonials from './components/Testimonials';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
 import EngagementPopup from './components/EngagementPopup';
-import ProgressTracker from './components/ProgressTracker';
-import LimitedTimeOffer from './components/LimitedTimeOffer';
+import SpecialOffer from './components/SpecialOffer';
 
 function App() {
   const { emitSystemEvent, emitUserAction } = useApp();
   const [showEngagementPopup, setShowEngagementPopup] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [sessionTime, setSessionTime] = useState(0);
-  const [showLimitedOffer, setShowLimitedOffer] = useState(false);
+  const [showSpecialOffer, setShowSpecialOffer] = useState(false);
 
   // Track user session time
   useEffect(() => {
@@ -30,22 +28,18 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // Show limited time offer after 30 seconds
+  // Show special offer after 20 seconds
   useEffect(() => {
-    if (sessionTime === 30 && !localStorage.getItem('offerShown')) {
-      setShowLimitedOffer(true);
-      localStorage.setItem('offerShown', 'true');
+    if (sessionTime === 20 && !localStorage.getItem('specialOfferShown')) {
+      setShowSpecialOffer(true);
     }
   }, [sessionTime]);
 
-  // Track scroll progress
   useEffect(() => {
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(progress);
       
-      // Show engagement popup when user reaches 70% of the page
       if (progress > 70 && !showEngagementPopup && !localStorage.getItem('popupShown')) {
         setShowEngagementPopup(true);
       }
@@ -60,23 +54,24 @@ function App() {
     };
   }, [emitSystemEvent, showEngagementPopup]);
 
-  // Record user interactions
-  const trackUserInteraction = (element) => {
+  const trackUserInteraction = useCallback((element) => {
     emitUserAction('element_clicked', { element, timestamp: new Date() });
+  }, [emitUserAction]);
+
+  const handleSpecialOfferClose = () => {
+    setShowSpecialOffer(false);
+    localStorage.setItem('specialOfferShown', 'true');
   };
 
   return (
     <div className="app-container relative">
-      <Header />
-      <Hero />
-      <Features />
-      <Pricing />
-      <Testimonials />
-      <CTA />
-      <Footer />
-      
-      {/* Progress tracker */}
-      <ProgressTracker progress={scrollProgress} />
+      <Header onInteraction={trackUserInteraction} />
+      <Hero onInteraction={trackUserInteraction} />
+      <Features onInteraction={trackUserInteraction} />
+      <Pricing onInteraction={trackUserInteraction} />
+      <Testimonials onInteraction={trackUserInteraction} />
+      <CTA onInteraction={trackUserInteraction} />
+      <Footer onInteraction={trackUserInteraction} />
       
       {/* Engagement popup */}
       {showEngagementPopup && (
@@ -86,9 +81,9 @@ function App() {
         }} />
       )}
       
-      {/* Limited time offer */}
-      {showLimitedOffer && (
-        <LimitedTimeOffer onClose={() => setShowLimitedOffer(false)} />
+      {/* Special offer */}
+      {showSpecialOffer && (
+        <SpecialOffer onClose={handleSpecialOfferClose} />
       )}
     </div>
   );

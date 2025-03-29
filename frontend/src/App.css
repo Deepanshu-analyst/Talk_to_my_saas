@@ -65,6 +65,25 @@
   text-align: left;
 }
 
+/* Add shadow glow effect for buttons */
+.shadow-glow {
+  box-shadow: 0 0 15px rgba(77, 115, 230, 0.5);
+}
+
+/* Animation for floating elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-fast {
+  animation: float 3s ease-in-out infinite;
+}
+
 /* Keep animation for potential future use */
 @keyframes logo-spin {
   from { transform: rotate(0deg); }
