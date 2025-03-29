@@ -190,7 +190,7 @@ const Hero = () => {
           
           {/* Modern Analytics Dashboard */}
           <div className={`md:w-1/2 transition-all duration-1000 delay-200 transform ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}>
-            <div className="relative bg-dark-800/80 backdrop-blur-sm p-4 rounded-2xl shadow-2xl border border-dark-700 hover:shadow-glow-lg transition-all duration-500 transform hover:scale-[1.02]">
+            <div className="relative bg-dark-800/80 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-dark-700 hover:shadow-glow-lg transition-all duration-500 transform hover:scale-[1.02]">
               {/* Dashboard Header */}
               <div className="bg-dark-900 rounded-t-xl p-3 border-b border-dark-700 flex items-center justify-between">
                 <div className="flex items-center space-x-2">

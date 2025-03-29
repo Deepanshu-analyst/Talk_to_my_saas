@@ -68,31 +68,27 @@ function App() {
   return (
     <div className="app-container relative">
       <Header />
-      <main className="app-main" onClick={() => trackUserInteraction('main_content')}>
-        <Hero />
-        <Features />
-        <Pricing />
-        <Testimonials />
-        <CTA />
-      </main>
+      <Hero />
+      <Features />
+      <Pricing />
+      <Testimonials />
+      <CTA />
       <Footer />
       
-      {/* Psychological engagement elements */}
+      {/* Progress tracker */}
       <ProgressTracker progress={scrollProgress} />
       
+      {/* Engagement popup */}
       {showEngagementPopup && (
-        <EngagementPopup 
-          onClose={() => {
-            setShowEngagementPopup(false);
-            localStorage.setItem('popupShown', 'true');
-          }}
-        />
+        <EngagementPopup onClose={() => {
+          setShowEngagementPopup(false);
+          localStorage.setItem('popupShown', 'true');
+        }} />
       )}
       
+      {/* Limited time offer */}
       {showLimitedOffer && (
-        <LimitedTimeOffer
-          onClose={() => setShowLimitedOffer(false)}
-        />
+        <LimitedTimeOffer onClose={() => setShowLimitedOffer(false)} />
       )}
     </div>
   );

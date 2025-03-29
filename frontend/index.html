@@ -4,10 +4,51 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>MSMEz - ERP for Small Businesses | Web Scraping & WhatsApp Marketing</title>
+    <meta name="description" content="Comprehensive ERP solution for small businesses with web scraping, WhatsApp marketing, and business applications. Start your 14-day free trial today!">
+    <meta name="keywords" content="ERP, small business, web scraping, WhatsApp marketing, CRM">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://msmez.com/">
+    <meta property="og:title" content="MSMEz - ERP for Small Businesses">
+    <meta property="og:description" content="Comprehensive ERP solution for small businesses with web scraping, WhatsApp marketing, and business applications.">
+    <meta property="og:image" content="/images/og-image.jpg">
+    
+    <!-- Preload critical assets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Add loading animation styles -->
+    <style>
+      .loader-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(to bottom, #0077b3, #00334d);
+      }
+      .loader {
+        width: 48px;
+        height: 48px;
+        border: 5px solid #FFF;
+        border-bottom-color: #4d73e6;
+        border-radius: 50%;
+        animation: rotation 1s linear infinite;
+      }
+      @keyframes rotation {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Initial loading state -->
+      <div class="loader-container">
+        <div class="loader"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
