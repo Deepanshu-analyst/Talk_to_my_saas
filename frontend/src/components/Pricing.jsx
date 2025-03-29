@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { useInView } from 'react-intersection-observer';
 
 const Pricing = () => {
   const { emitUserAction } = useApp();
   const [isVisible, setIsVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('monthly');
   const [showComparison, setShowComparison] = useState(false);
+  
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+    triggerOnce: true
+  });
 
   useEffect(() => {
-    setIsVisible(true);
-  }, []);
+    if (inView) {
+      setIsVisible(true);
+    }
+  }, [inView]);
 
   const plans = [
     {
@@ -23,7 +31,8 @@ const Pricing = () => {
         'Email Support',
         '2 Team Members'
       ],
-      highlighted: false
+      highlighted: false,
+      badge: 'BASIC'
     },
     {
       name: 'Professional',
@@ -38,7 +47,8 @@ const Pricing = () => {
         'API Access',
         'Advanced Analytics'
       ],
-      highlighted: true
+      highlighted: true,
+      badge: 'POPULAR'
     },
     {
       name: 'Enterprise',
@@ -54,7 +64,8 @@ const Pricing = () => {
         'Advanced Analytics & Reports',
         'Dedicated Account Manager'
       ],
-      highlighted: false
+      highlighted: false,
+      badge: 'PREMIUM'
     }
   ];
 
@@ -75,21 +86,21 @@ const Pricing = () => {
   };
 
   return (
-    <section id="pricing" className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+    <section ref={ref} id="pricing" className="py-20 bg-gradient-to-b from-primary-800 to-dark-800 text-white relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-40 -right-20 w-80 h-80 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
-        <div className="absolute -bottom-40 -left-20 w-80 h-80 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+        <div className="absolute top-40 -right-20 w-80 h-80 bg-primary-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse-slow"></div>
+        <div className="absolute -bottom-40 -left-20 w-80 h-80 bg-secondary-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
       </div>
 
-      {/* Floating elements - simplified and fixed */}
-      <div className="absolute top-20 right-10 bg-white p-3 rounded-lg shadow-lg border border-gray-200 transform rotate-3 hover:rotate-0 transition-all duration-300 z-10 hidden md:block">
+      {/* Floating elements - dashboard style */}
+      <div className="absolute top-20 right-10 bg-dark-800/90 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-dark-700 transform rotate-3 hover:rotate-0 transition-all duration-300 z-10 hidden md:block text-white">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-          <span className="text-gray-800 text-sm">Save 20% Annually</span>
+          <span className="text-sm">Save 20% Annually</span>
         </div>
       </div>
-      <div className="absolute bottom-20 left-10 bg-white p-3 rounded-lg shadow-lg border border-gray-200 transform -rotate-2 hover:rotate-0 transition-all duration-300 z-10 hidden md:block">
+      <div className="absolute bottom-20 left-10 bg-dark-800/90 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-dark-700 transform -rotate-2 hover:rotate-0 transition-all duration-300 z-10 hidden md:block">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
           <span className="text-gray-800 text-sm">Free 14-day Trial</span>
@@ -98,31 +109,37 @@ const Pricing = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className={`text-center mb-12 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <span className="text-blue-600 font-semibold text-sm uppercase tracking-wider">Pricing</span>
-          <h2 className="text-4xl font-bold text-gray-800 mt-2 mb-4">Simple, Transparent Pricing</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">Choose the perfect plan for your business needs</p>
+          <div className="inline-block bg-primary-100 px-3 py-1 rounded-full text-primary-600 text-sm font-medium mb-4">
+            <span className="flex items-center">
+              <span className="w-2 h-2 bg-primary-500 rounded-full mr-2 animate-pulse"></span>
+              Simple Pricing
+            </span>
+          </div>
+          <h2 className="text-4xl font-bold text-primary-800 mt-2 mb-4">Choose Your Perfect Plan</h2>
+          <p className="text-xl text-primary-600 max-w-2xl mx-auto">Transparent pricing with no hidden fees</p>
           
-          {/* Billing toggle */}
-          <div className="flex items-center justify-center mt-8 mb-8">
+          {/* Billing toggle with dashboard style */}
+          <div className="flex items-center justify-center mt-8 mb-8 bg-dark-800/80 backdrop-blur-sm p-1 rounded-lg inline-flex border border-dark-700">
             <button 
-              className={`px-4 py-2 rounded-l-lg font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 activeTab === 'monthly' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-gradient-to-r from-primary-600 to-secondary-600 text-white shadow-md' 
+                  : 'bg-transparent text-gray-300 hover:text-white'
               }`}
               onClick={() => setActiveTab('monthly')}
             >
               Monthly
             </button>
             <button 
-              className={`px-4 py-2 rounded-r-lg font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center ${
                 activeTab === 'annual' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-gradient-to-r from-primary-600 to-secondary-600 text-white shadow-md' 
+                  : 'bg-transparent text-gray-300 hover:text-white'
               }`}
               onClick={() => setActiveTab('annual')}
             >
-              Annual <span className="text-xs font-bold">Save 20%</span>
+              Annual 
+              <span className="ml-1 text-xs font-bold bg-green-500 text-white px-1.5 py-0.5 rounded">-20%</span>
             </button>
           </div>
         </div>
@@ -131,26 +148,34 @@ const Pricing = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative bg-white rounded-2xl shadow-xl p-6 transition-all duration-500 ${
+              className={`relative ${
                 plan.highlighted 
-                  ? 'transform scale-105 z-10 border-2 border-blue-500' 
-                  : 'border border-gray-100 hover:border-blue-300'
+                  ? 'bg-dark-800/90 backdrop-blur-sm text-white border border-dark-700' 
+                  : 'bg-white text-primary-800 border border-primary-100 hover:border-primary-300'
+              } rounded-2xl shadow-xl p-6 transition-all duration-500 hover:shadow-2xl ${
+                plan.highlighted 
+                  ? 'transform scale-105 z-10' 
+                  : 'hover:-translate-y-2'
               } ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
               style={{ transitionDelay: `${index * 150}ms` }}
             >
-              {plan.highlighted && (
-                <div className="absolute top-0 right-0 bg-blue-600 text-white px-4 py-1 rounded-bl-lg rounded-tr-2xl text-sm font-semibold">
-                  Most Popular
-                </div>
-              )}
+              {/* Badge */}
+              <div className={`absolute top-0 right-0 ${
+                plan.highlighted 
+                  ? 'bg-secondary-500' 
+                  : 'bg-primary-600'
+              } text-white px-4 py-1 rounded-bl-lg rounded-tr-2xl text-sm font-semibold`}>
+                {plan.badge}
+              </div>
+              
               <div className="text-center">
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">{plan.name}</h3>
-                <p className="text-gray-600 mb-6">{plan.description}</p>
+                <h3 className={`text-2xl font-bold ${plan.highlighted ? 'text-white' : 'text-gray-300'} mb-2`}>{plan.name}</h3>
+                <p className={`${plan.highlighted ? 'text-primary-700' : 'text-primary-600'} mb-6`}>{plan.description}</p>
                 <div className="mb-8">
-                  <span className="text-4xl font-bold text-gray-800">${plan.price[activeTab]}</span>
-                  <span className="text-gray-600">/month</span>
+                  <span className={`text-4xl font-bold ${plan.highlighted ? 'text-white' : 'text-primary-800'}`}>${plan.price[activeTab]}</span>
+                  <span className={plan.highlighted ? 'text-gray-300' : 'text-primary-600'}>/month</span>
                   {activeTab === 'annual' && (
-                    <div className="text-sm text-green-600 mt-1">
+                    <div className={`text-sm ${plan.highlighted ? 'text-green-400' : 'text-green-600'} mt-1`}>
                       Billed annually (${parseInt(plan.price[activeTab]) * 12})
                     </div>
                   )}
@@ -159,8 +184,8 @@ const Pricing = () => {
               
               <ul className="space-y-4 mb-8">
                 {plan.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-center text-gray-600">
-                    <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <li key={featureIndex} className={`flex items-center ${plan.highlighted ? 'text-gray-300' : 'text-primary-600'}`}>
+                    <svg className={`w-4 h-4 ${plan.highlighted ? 'text-secondary-400' : 'text-green-500'} mr-2`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     {feature}
@@ -171,8 +196,8 @@ const Pricing = () => {
               <button
                 className={`w-full py-3 px-6 rounded-lg font-semibold transition-all ${
                   plan.highlighted
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-blue-200'
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                    ? 'bg-gradient-to-r from-primary-600 to-secondary-600 text-white hover:from-primary-700 hover:to-secondary-700 shadow-lg hover:shadow-glow'
+                    : 'bg-primary-100 text-primary-800 hover:bg-primary-200'
                 } transform hover:-translate-y-1`}
                 onClick={() => handlePlanSelect(plan)}
               >
@@ -180,16 +205,21 @@ const Pricing = () => {
               </button>
               
               {plan.highlighted && (
-                <p className="text-center text-sm text-gray-500 mt-4">No credit card required</p>
+                <div className="text-center text-sm text-gray-400 mt-4 flex items-center justify-center">
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  No credit card required
+                </div>
               )}
             </div>
           ))}
         </div>
         
-        {/* Feature comparison toggle */}
+        {/* Feature comparison toggle with dashboard style */}
         <div className="mt-16 text-center">
           <button 
-            className="text-blue-600 font-medium flex items-center mx-auto hover:text-blue-800 transition-colors"
+            className="bg-dark-800/80 backdrop-blur-sm text-white font-medium flex items-center mx-auto px-4 py-2 rounded-lg border border-dark-700 hover:bg-dark-700 transition-all"
             onClick={() => setShowComparison(!showComparison)}
           >
             {showComparison ? 'Hide' : 'Show'} Feature Comparison
@@ -203,30 +233,30 @@ const Pricing = () => {
             </svg>
           </button>
           
-          {/* Feature comparison table */}
+          {/* Feature comparison table with dashboard style */}
           {showComparison && (
-            <div className="mt-8 overflow-x-auto">
-              <table className="w-full border-collapse">
+            <div className={`mt-8 overflow-x-auto transition-all duration-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+              <table className="w-full border-collapse bg-dark-800/90 backdrop-blur-sm rounded-xl overflow-hidden shadow-xl border border-dark-700 text-primary-700">
                 <thead>
                   <tr>
-                    <th className="text-left p-3 bg-gray-50 border-b-2 border-gray-200">Feature</th>
-                    <th className="p-3 bg-gray-50 border-b-2 border-gray-200">Starter</th>
-                    <th className="p-3 bg-gray-50 border-b-2 border-gray-200 border-l border-r border-gray-200">Professional</th>
-                    <th className="p-3 bg-gray-50 border-b-2 border-gray-200">Enterprise</th>
+                    <th className="text-left p-3 bg-dark-900 border-b border-dark-700">Feature</th>
+                    <th className="p-3 bg-dark-900 border-b border-dark-700">Starter</th>
+                    <th className="p-3 bg-dark-900 border-b border-dark-700 border-l border-r border-dark-700">Professional</th>
+                    <th className="p-3 bg-dark-900 border-b border-dark-700">Enterprise</th>
                   </tr>
                 </thead>
                 <tbody>
                   {featureComparison.map((feature, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="p-3 font-medium text-gray-700 border-b border-gray-200">{feature.name}</td>
-                      <td className="p-3 text-center border-b border-gray-200">
-                        <span className={feature.starter === '❌' ? 'text-red-500' : ''}>{feature.starter}</span>
+                    <tr key={index} className={index % 2 === 0 ? 'bg-dark-800' : 'bg-dark-800/50'}>
+                      <td className="p-3 font-medium text-gray-300 border-b border-dark-700">{feature.name}</td>
+                      <td className="p-3 text-center border-b border-dark-700">
+                        <span className={feature.starter === '❌' ? 'text-red-500' : feature.starter === '✅' ? 'text-green-500' : 'text-gray-300'}>{feature.starter}</span>
                       </td>
-                      <td className="p-3 text-center border-b border-gray-200 border-l border-r border-gray-200 bg-blue-50">
-                        <span className={feature.professional === '❌' ? 'text-red-500' : feature.professional === '✅' ? 'text-green-500' : ''}>{feature.professional}</span>
+                      <td className="p-3 text-center border-b border-dark-700 border-l border-r border-dark-700 bg-dark-700/50">
+                        <span className={feature.professional === '❌' ? 'text-red-500' : feature.professional === '✅' ? 'text-green-500' : 'text-gray-300'}>{feature.professional}</span>
                       </td>
-                      <td className="p-3 text-center border-b border-gray-200">
-                        <span className={feature.enterprise === '❌' ? 'text-red-500' : feature.enterprise === '✅' ? 'text-green-500' : ''}>{feature.enterprise}</span>
+                      <td className="p-3 text-center border-b border-dark-700">
+                        <span className={feature.enterprise === '❌' ? 'text-red-500' : feature.enterprise === '✅' ? 'text-green-500' : 'text-gray-300'}>{feature.enterprise}</span>
                       </td>
                     </tr>
                   ))}
@@ -236,9 +266,9 @@ const Pricing = () => {
           )}
         </div>
         
-        {/* FAQ Section */}
+        {/* FAQ Section with dashboard style */}
         <div className="mt-20">
-          <h3 className="text-2xl font-bold text-center text-gray-800 mb-8">Frequently Asked Questions</h3>
+          <h3 className="text-2xl font-bold text-center text-primary-800 mb-8">Frequently Asked Questions</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {[
               {
@@ -258,22 +288,32 @@ const Pricing = () => {
                 answer: "Yes, you can cancel your subscription at any time. You'll continue to have access until the end of your billing period."
               }
             ].map((faq, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <h4 className="font-semibold text-gray-800 mb-2">{faq.question}</h4>
-                <p className="text-gray-600">{faq.answer}</p>
+              <div 
+                key={index} 
+                className={`bg-black/80 backdrop-blur-sm p-6 rounded-lg shadow-lg border border-dark-700 text-white transition-all duration-500 transform hover:-translate-y-1 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                style={{ transitionDelay: `${index * 100 + 300}ms` }}
+              >
+                <div className="flex items-center mb-2">
+                  <h4 className="font-semibold text-white">{faq.question}</h4>
+                  <div className="ml-2 bg-dark-700 text-xs px-2 py-0.5 rounded text-primary-400">FAQ</div>
+                </div>
+                <p className="text-gray-300">{faq.answer}</p>
               </div>
             ))}
           </div>
         </div>
         
-        {/* CTA */}
+        {/* CTA with dashboard style */}
         <div className="mt-16 text-center">
-          <p className="text-gray-600 mb-4">Still have questions?</p>
+          <p className="text-primary-600 mb-4">Still have questions?</p>
           <button 
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+            className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-primary-700 hover:to-secondary-700 transition-all shadow-lg hover:shadow-glow transform hover:-translate-y-1 inline-flex items-center"
             onClick={() => emitUserAction('contact_sales_clicked', {})}
           >
-            Contact Sales
+            <span>Contact Sales</span>
+            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
           </button>
         </div>
       </div>

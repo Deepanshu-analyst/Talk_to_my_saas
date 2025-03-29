@@ -1,11 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const Hero = () => {
   const { emitUserAction } = useApp();
   const [isVisible, setIsVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
-  const [chartData, setChartData] = useState([35, 55, 40, 65, 45]);
+  const [chartData, setChartData] = useState([
+    { day: 'Mon', value: 35 },
+    { day: 'Tue', value: 55 },
+    { day: 'Wed', value: 40 },
+    { day: 'Thu', value: 65 },
+    { day: 'Fri', value: 45 }
+  ]);
   const [isTyping, setIsTyping] = useState(true);
   const fullText = "Your All-in-One Business Solution";
   const [typedText, setTypedText] = useState('');
@@ -15,10 +22,10 @@ const Hero = () => {
     { type: 'warning', message: 'New Leads: 12', time: '5 min ago', isNew: false },
     { type: 'info', message: 'Conversion: 8.7%', time: '1 hour ago', isNew: false }
   ]);
-  
+
   // Ref for smooth scrolling
   const featuresRef = useRef(null);
-  
+
   // Typing effect
   useEffect(() => {
     if (charIndex < fullText.length) {
@@ -31,21 +38,22 @@ const Hero = () => {
       setIsTyping(false);
     }
   }, [charIndex]);
-  
+
   // Entrance animations and data updates
   useEffect(() => {
     setIsVisible(true);
-    
+
     // Simulate real-time data updates
     const chartInterval = setInterval(() => {
       setChartData(prev => {
-        const newData = [...prev];
-        const randomIndex = Math.floor(Math.random() * newData.length);
-        newData[randomIndex] = Math.floor(Math.random() * 40) + 30;
+        const newData = prev.map(data => ({
+          ...data,
+          value: Math.floor(Math.random() * 40) + 30
+        }));
         return newData;
       });
     }, 3000);
-    
+
     // Simulate new notifications
     const notificationInterval = setInterval(() => {
       const notificationTypes = ['success', 'warning', 'info'];
@@ -56,10 +64,10 @@ const Hero = () => {
         'New feature request', 
         'Support ticket resolved'
       ];
-      
+
       const randomType = notificationTypes[Math.floor(Math.random() * notificationTypes.length)];
       const randomMessage = notificationMessages[Math.floor(Math.random() * notificationMessages.length)];
-      
+
       setNotifications(prev => {
         const newNotifications = [
           { 
@@ -73,13 +81,13 @@ const Hero = () => {
         return newNotifications;
       });
     }, 8000);
-    
+
     return () => {
       clearInterval(chartInterval);
       clearInterval(notificationInterval);
     };
   }, []);
-  
+
   // Smooth scroll to features
   const scrollToFeatures = () => {
     if (featuresRef.current) {
@@ -89,6 +97,18 @@ const Hero = () => {
       });
     }
   };
+
+  // Real-time clock state
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+
+  // Update clock every second
+  useEffect(() => {
+    const clockInterval = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
+
+    return () => clearInterval(clockInterval);
+  }, []);
 
   return (
     <section className="relative min-h-screen w-full bg-gradient-to-br from-primary-900 via-primary-800 to-dark-900 text-white overflow-hidden">
@@ -102,15 +122,16 @@ const Hero = () => {
 
       <div className="container mx-auto px-6 py-24 z-10 max-w-full w-full">
         <div className="flex flex-col md:flex-row items-center justify-between">
+          {/* Enhanced Left Side Content */}
           <div className={`md:w-1/2 mb-12 md:mb-0 transition-all duration-1000 transform ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`}>
             <div className="relative">
-              <h1 className="text-5xl font-bold mb-6 leading-tight">
+              <h1 className="text-5xl font-bold text-white mb-4 leading-tight animate-fade-in">
                 {typedText}
                 {isTyping && <span className="animate-pulse">|</span>}
                 <span className="block text-secondary-400 mt-2">Powered by AI</span>
               </h1>
             </div>
-            <p className="text-xl mb-8 text-blue-100 max-w-lg">
+            <p className="text-xl mb-8 text-blue-100 max-w-lg animate-fade-in">
               Streamline your business operations with our comprehensive ERP system featuring advanced web scraping, 
               WhatsApp marketing, and essential business applications.
             </p>
@@ -139,7 +160,7 @@ const Hero = () => {
               </button>
             </div>
             
-            {/* Trust badges */}
+            {/* Enhanced Trust Badges */}
             <div className={`mt-12 transition-all duration-1000 delay-300 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
               <div className="flex items-center mb-4">
                 <div className="flex -space-x-2 mr-4">
@@ -185,22 +206,26 @@ const Hero = () => {
                     <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
                     Live Data
                   </div>
+                  <div className="text-xs bg-dark-700 px-2 py-1 rounded-md flex items-center">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
+                    {currentTime}
+                  </div>
                 </div>
               </div>
               
               {/* Dashboard Tabs */}
               <div className="bg-dark-800 p-2 flex space-x-1 border-b border-dark-700">
-                {['overview', 'analytics', 'campaigns', 'customers'].map((tab) => (
+                {['Overview', 'Analytics', 'Campaigns', 'Customers'].map((tab) => (
                   <button
                     key={tab}
                     className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                      activeTab === tab 
+                      activeTab === tab.toLowerCase() 
                         ? 'bg-primary-600 text-white' 
-                        : 'text-gray-400 hover:bg-dark-700'
+                        : 'text-gray-400'
                     }`}
-                    onClick={() => setActiveTab(tab)}
+                    onClick={() => setActiveTab(tab.toLowerCase())}
                   >
-                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    {tab}
                   </button>
                 ))}
               </div>
@@ -214,7 +239,7 @@ const Hero = () => {
                       label: 'Total Revenue', 
                       value: '$24,568', 
                       change: '+12%', 
-                      icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+                      icon: 'M12 8c-1.657 0-3 .895-3 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
                       color: 'from-green-600 to-green-400'
                     },
                     { 
@@ -255,36 +280,31 @@ const Hero = () => {
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-medium">Performance Metrics</h3>
                     <div className="flex space-x-2 text-xs">
-                      <span className="px-2 py-1 rounded bg-primary-600 text-white">Weekly</span>
-                      <span className="px-2 py-1 rounded text-gray-400 hover:bg-dark-600 cursor-pointer">Monthly</span>
+                      {['Weekly', 'Monthly'].map((period) => (
+                        <button
+                          key={period}
+                          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            period === 'Weekly' 
+                              ? 'bg-primary-600 text-white' 
+                              : 'text-gray-400 hover:bg-dark-700'
+                          }`}
+                        >
+                          {period}
+                        </button>
+                      ))}
                     </div>
                   </div>
                   
                   {/* Chart Visualization */}
-                  <div className="h-32 relative">
-                    <div className="absolute bottom-0 left-0 right-0 h-px bg-dark-600"></div>
-                    <div className="absolute left-0 top-0 bottom-0 w-px bg-dark-600"></div>
-                    
-                    {/* Chart bars */}
-                    <div className="absolute inset-0 pl-2 flex items-end justify-between">
-                      {chartData.map((value, index) => (
-                        <div key={index} className="w-12 flex flex-col items-center">
-                          <div 
-                            className={`w-8 bg-gradient-to-t ${
-                              index % 2 === 0 ? 'from-primary-600 to-primary-400' : 'from-secondary-600 to-secondary-400'
-                            } rounded-t-sm`}
-                            style={{ 
-                              height: `${value}%`,
-                              transition: "height 1s cubic-bezier(0.34, 1.56, 0.64, 1)"
-                            }}
-                          ></div>
-                          <span className="text-xs text-gray-500 mt-1">
-                            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'][index]}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <ResponsiveContainer width="100%" height={150}>
+                    <LineChart data={chartData}>
+                      <CartesianGrid stroke="#ccc" />
+                      <XAxis dataKey="day" />
+                      <YAxis />
+                      <Tooltip contentStyle={{ backgroundColor: '#333', borderRadius: '5px', border: 'none' }} />
+                      <Line type="monotone" dataKey="value" stroke="#8884d8" strokeDasharray="0" />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
                 
                 {/* Activity Feed - Renamed and Enhanced */}

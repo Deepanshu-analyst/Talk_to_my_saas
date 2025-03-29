@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global Styles */
+body {
+  background-color: #f0f4ff; /* Light blue background */
+  color: #001a26; /* Dark blue text */
+}
+
+a {
+  color: #1ab2ff; /* Primary blue for links */
+}
+
+a:hover {
+  color: #0099e6; /* Darker blue on hover */
+}
+
+/* Button Styles */
+button {
+  background-color: #1ab2ff; /* Primary blue */
+  color: #fff; /* White text */
+}
+
+button:hover {
+  background-color: #0099e6; /* Darker blue on hover */
+}
+
 /* SVG sizing controls */
 @layer base {
   svg {

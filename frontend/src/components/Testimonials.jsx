@@ -1,6 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 const Testimonials = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+    triggerOnce: true
+  });
+
+  useEffect(() => {
+    if (inView) {
+      setIsVisible(true);
+    }
+  }, [inView]);
+
   const testimonials = [
     {
       name: 'Sarah Johnson',
@@ -26,19 +39,29 @@ const Testimonials = () => {
   ];
 
   return (
-    <section id="about" className="py-24 bg-gradient-to-b from-white to-gray-50">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="text-blue-600 font-semibold text-sm uppercase tracking-wider">Testimonials</span>
-          <h2 className="text-4xl font-bold text-gray-800 mt-2 mb-4">What Our Clients Say</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">Trusted by businesses worldwide</p>
+    <section ref={ref} id="testimonials" className="py-24 bg-gradient-to-b from-primary-800 to-dark-800 text-white relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-40 -right-20 w-80 h-80 bg-primary-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse-slow"></div>
+        <div className="absolute -bottom-40 -left-20 w-80 h-80 bg-secondary-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+      </div>
+      
+      <div className="container mx-auto px-6 relative z-10">
+        <div className={`text-center mb-16 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+          <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Testimonials</span>
+          <h2 className="text-4xl font-bold text-white mt-2 mb-4">What Our Clients Say</h2>
+          <p className="text-xl text-primary-600 max-w-2xl mx-auto">Trusted by businesses worldwide</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100 relative">
+            <div 
+              key={index} 
+              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 border border-primary-100 hover:border-primary-300 transform hover:-translate-y-2 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+              style={{ transitionDelay: `${index * 150}ms` }}
+            >
               <div className="flex items-center mb-6">
-                <div className="w-14 h-14 rounded-full overflow-hidden mr-4 border-2 border-blue-100">
+                <div className="w-14 h-14 rounded-full overflow-hidden mr-4 border-2 border-primary-100">
                   <img
                     src={testimonial.image}
                     alt={testimonial.name}
@@ -46,16 +69,16 @@ const Testimonials = () => {
                   />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-800 text-lg">{testimonial.name}</h3>
-                  <p className="text-gray-600 text-sm">{testimonial.role}</p>
+                  <h3 className="font-semibold text-primary-800 text-lg">{testimonial.name}</h3>
+                  <p className="text-primary-600 text-sm">{testimonial.role}</p>
                 </div>
               </div>
-              <p className="text-gray-700 italic mb-6">"{testimonial.content}"</p>
+              <p className="text-primary-700 italic mb-6">"{testimonial.content}"</p>
               <div className="flex text-yellow-400">
                 {[...Array(5)].map((_, i) => (
                   <svg
                     key={i}
-                    className={`w-5 h-5 ${i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                    className={`w-5 h-5 ${i < testimonial.rating ? 'text-yellow-400' : 'text-primary-300'}`}
                     width="20"
                     height="20"
                     fill="currentColor"
@@ -69,12 +92,16 @@ const Testimonials = () => {
           ))}
         </div>
         
-        {/* Add client logos */}
-        <div className="mt-20">
-          <p className="text-center text-gray-500 mb-8 text-sm uppercase tracking-wider">Trusted by companies worldwide</p>
+        {/* Client logos section with animations */}
+        <div className={`mt-20 transition-all duration-1000 delay-300 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+          <p className="text-center text-primary-500 mb-8 text-sm uppercase tracking-wider">Trusted by companies worldwide</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
             {[1, 2, 3, 4, 5].map((num) => (
-              <div key={num} className="bg-white p-4 rounded-lg shadow-sm">
+              <div 
+                key={num} 
+                className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
+                style={{ transitionDelay: `${num * 100}ms` }}
+              >
                 <img 
                   src={`/images/company-logo-${num}.svg`} 
                   alt={`Company ${num}`} 

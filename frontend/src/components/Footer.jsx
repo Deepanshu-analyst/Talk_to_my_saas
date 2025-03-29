@@ -2,11 +2,11 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white py-12">
+    <footer className="bg-black text-gray-300 py-12">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-2xl font-bold mb-4">ERP Suite</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">ERP Suite</h3>
             <p className="text-gray-400 mb-4">
               Empowering businesses with comprehensive solutions for growth and efficiency.
             </p>
