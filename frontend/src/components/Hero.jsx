@@ -190,29 +190,32 @@ const Hero = () => {
           
           {/* Modern Analytics Dashboard */}
           <div className={`md:w-1/2 transition-all duration-1000 delay-200 transform ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}>
-            <div className="relative bg-dark-800/80 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-dark-700 hover:shadow-glow-lg transition-all duration-500 transform hover:scale-[1.02]">
-              {/* Dashboard Header */}
-              <div className="bg-dark-900 rounded-t-xl p-3 border-b border-dark-700 flex items-center justify-between">
+            <div className="relative bg-dark-800/80 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-dark-700 hover:shadow-glow-lg transition-all duration-500 transform hover:scale-[1.02] overflow-hidden">
+              {/* Dashboard Header with improved styling */}
+              <div className="bg-dark-900/90 backdrop-blur-sm rounded-t-xl p-3 border-b border-dark-700 flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <div className="flex space-x-1">
-                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-red-500 rounded-full hover:opacity-80 transition-opacity cursor-pointer"></div>
+                    <div className="w-3 h-3 bg-yellow-500 rounded-full hover:opacity-80 transition-opacity cursor-pointer"></div>
+                    <div className="w-3 h-3 bg-green-500 rounded-full hover:opacity-80 transition-opacity cursor-pointer"></div>
                   </div>
-                  <div className="text-xs text-gray-400">Business Intelligence Dashboard</div>
+                  <div className="text-xs text-gray-400 flex items-center">
+                    <span>Business Intelligence</span>
+                  </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="text-xs bg-dark-700 px-2 py-1 rounded-md flex items-center">
-                    <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                  <div className="text-xs bg-dark-700/80 backdrop-blur-sm px-2 py-1 rounded-md flex items-center border border-dark-600">
+                    <span className="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>
                     Live Data
                   </div>
-                  <div className="text-xs bg-dark-700 px-2 py-1 rounded-md flex items-center">
+                  <div className="text-xs bg-dark-700/80 backdrop-blur-sm px-2 py-1 rounded-md flex items-center border border-dark-600">
                     <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
                     {currentTime}
                   </div>
                 </div>
               </div>
               
+              {/* Rest of the dashboard content remains the same */}
               {/* Dashboard Tabs */}
               <div className="bg-dark-800 p-2 flex space-x-1 border-b border-dark-700">
                 {['Overview', 'Analytics', 'Campaigns', 'Customers'].map((tab) => (
@@ -252,7 +255,7 @@ const Hero = () => {
                   ].map((stat, index) => (
                     <div 
                       key={index} 
-                      className="bg-dark-700 rounded-lg p-3 border border-dark-600 hover:border-primary-500 transition-colors transform hover:translate-y-[-2px] duration-300"
+                      className="bg-dark-700 rounded-lg p-3 border border-dark-600 hover:border-primary-500 transition-colors transform hover:translate-y-[-2px] duration-300 overflow-hidden"
                     >
                       <div className="flex justify-between items-start">
                         <div>
@@ -276,7 +279,7 @@ const Hero = () => {
                 </div>
                 
                 {/* Chart */}
-                <div className="bg-dark-700 rounded-lg p-4 border border-dark-600 mb-4 transform hover:translate-y-[-2px] duration-300">
+                <div className="bg-dark-700 rounded-lg p-4 border border-dark-600 mb-4 transform hover:translate-y-[-2px] duration-300 overflow-hidden">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-medium">Performance Metrics</h3>
                     <div className="flex space-x-2 text-xs">
@@ -308,7 +311,7 @@ const Hero = () => {
                 </div>
                 
                 {/* Activity Feed - Renamed and Enhanced */}
-                <div className="bg-dark-700 rounded-lg p-4 border border-dark-600 transform hover:translate-y-[-2px] duration-300">
+                <div className="bg-dark-700 rounded-lg p-4 border border-dark-600 transform hover:translate-y-[-2px] duration-300 overflow-hidden">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="font-medium">Live Updates</h3>
                     <button className="text-xs text-primary-400 hover:text-primary-300">View All</button>
@@ -318,13 +321,11 @@ const Hero = () => {
                     {notifications.map((notification, index) => (
                       <div 
                         key={index} 
-                        className={`flex items-start p-2 rounded-lg ${
+                        className={`flex items-center p-2 rounded-lg overflow-hidden ${
                           notification.isNew ? 'bg-primary-900/30' : 'bg-dark-600/50'
-                        } hover:bg-dark-600 transition-all duration-500 transform ${
-                          notification.isNew ? 'scale-102' : ''
-                        }`}
+                        } hover:bg-dark-600 transition-all duration-500`}
                       >
-                        <div className={`w-2 h-2 mt-1.5 rounded-full mr-2 ${
+                        <div className={`flex-shrink-0 w-3 h-3 rounded-full mr-3 ${
                           notification.type === 'success' ? 'bg-green-500' : 
                           notification.type === 'warning' ? 'bg-yellow-500' : 
                           'bg-blue-500'
@@ -334,7 +335,7 @@ const Hero = () => {
                           <p className="text-xs text-gray-400">{notification.time}</p>
                         </div>
                         {notification.isNew && (
-                          <span className="px-1.5 py-0.5 bg-primary-500 text-white text-xs rounded-full animate-pulse">
+                          <span className="px-2 py-0.5 bg-primary-500 text-white text-xs rounded-full">
                             New
                           </span>
                         )}
